@@ -4,7 +4,7 @@ import Topbar from './components/Topbar';
 import Filters from './components/Filters';
 import Contacts from './components/Contacts';
 import Loading from './components/Loading';
-import { handleSort } from './services/sort';
+import { handleSort } from './utils/sort';
 import { baseUrl } from  './services/api';
 
 class App extends React.Component {
@@ -22,16 +22,16 @@ class App extends React.Component {
 
   handleOrderFilterChange = (e) => {
     let sortedData;
-    let direct = this.state.direction;
-    if(e.target.name === this.state.orderFilter){
-      sortedData = handleSort(this.state.data, this.state.direction, this.state.orderFilter)
+    let { direction, data, orderFilter } = this.state;
+    if(e.target.name === orderFilter){
+      sortedData = handleSort(data, direction, orderFilter)
     } else {
-      direct = 1;
-      sortedData = handleSort(this.state.data, 1, e.target.name)
+      direction = 1;
+      sortedData = handleSort(data, 1, e.target.name)
     }
     this.setState({
       data:sortedData,
-      direction: -direct,
+      direction: -direction,
       orderFilter:e.target.name});
   }
 
@@ -41,29 +41,26 @@ class App extends React.Component {
     this.setState({filteredData});
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     this.setState({isLoading:true});
-    fetch(baseUrl)
-    .then( response => response.json())
-    .then(data => {
-      const sortedData = handleSort(data, this.state.direction , this.state.orderFilter);
-      this.setState({
-        data:sortedData,
-        filteredData: sortedData,
-        isLoading: false,
-        direction: -this.state.direction })
-    })
-    .catch(error => this.setState({error, isLoading:false}))
+    const response = await fetch(baseUrl);
+    const data  = await response.json();
+    const sortedData = handleSort(data, this.state.direction , this.state.orderFilter);
+    this.setState({
+      data:sortedData,
+      filteredData: sortedData,
+      isLoading: false,
+      direction: -this.state.direction })
   };
 
   render() {
     return (
-      <React.Fragment>
+      <>
         <Topbar/>
         <Filters
           handleSearchChange={this.handleSearchChange}
           handleOrderFilterChange={this.handleOrderFilterChange}
-          search={this.state.searchFilter}
+          searchFilter={this.state.searchFilter}
           orderFilter={this.state.orderFilter}
         />
         {
@@ -73,7 +70,7 @@ class App extends React.Component {
             contacts={this.state.filteredData}
           />
         }
-      </React.Fragment>
+      </>
     )
   }
 }

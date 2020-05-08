@@ -1,7 +1,7 @@
 import React from 'react';
 import './filters.scss';
 
-const Filters = ({search, handleSearchChange, handleOrderFilterChange, orderFilter}) => {
+const Filters = ({searchFilter, handleSearchChange, handleOrderFilterChange, orderFilter}) => {
 	return (
     <div className="container" data-testid="filters">
 			<section className="filters">
@@ -10,7 +10,7 @@ const Filters = ({search, handleSearchChange, handleOrderFilterChange, orderFilt
 						type="text"
 						className="filters__search__input"
 						placeholder="Pesquisar"
-						value={search}
+						value={searchFilter}
 						onChange={handleSearchChange}
 					/>
 					<button

@@ -16,11 +16,9 @@ const Contacts = ({contacts}) => {
 					<span className="contact__data">Departamento</span>
 				</article>
 				{
-					contacts ?
-					contacts.map(({id, ...otherProps}) =>
+					contacts?.map(({id, ...otherProps}) =>
 						<Contact key={id} {...otherProps}/>
-					) :
-					<div>There was a problem fetching your data</div>
+					)
 				}
 			</section>
 		</div>
